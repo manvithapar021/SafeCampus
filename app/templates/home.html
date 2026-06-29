@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="hero-section text-center py-5 mb-5">
+    <div class="hero-content">
+        <div class="hero-icon mb-4">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-3">
+            Welcome to SafeCampus
+        </h1>
+        <p class="lead text-white-50 mb-4">
+            Real-time student safety monitoring for SRM Institute.
+            Parents stay connected, students stay safe.
+        </p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-danger btn-lg me-3">
+            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+        </a>
+        {% else %}
+        <a href="{{ url_for('main.register') }}" class="btn btn-danger btn-lg me-3">
+            <i class="fas fa-user-plus"></i> Get Started
+        </a>
+        <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- FEATURES SECTION -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-danger bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-map-marker-alt text-danger fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">Live Location Tracking</h5>
+                <p class="text-muted">
+                    Parents see their child's exact location on an
+                    interactive map in real time.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-warning bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-bell text-warning fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">Instant Alerts</h5>
+                <p class="text-muted">
+                    Automatic email notifications when your child
+                    enters or leaves campus.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-success bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-exclamation-triangle text-success fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">SOS Panic Button</h5>
+                <p class="text-muted">
+                    One tap sends an emergency alert with exact
+                    location to parents and security.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-info bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-history text-info fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">Location History</h5>
+                <p class="text-muted">
+                    View where your child has been throughout
+                    the day with a full timeline.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-primary bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-check-circle text-primary fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">Check-In System</h5>
+                <p class="text-muted">
+                    Students voluntarily check in from hostel,
+                    library, or classroom to reassure parents.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-danger bg-opacity-10 rounded-circle mx-auto mb-3">
+                    <i class="fas fa-moon text-danger fa-2x"></i>
+                </div>
+                <h5 class="fw-bold">Night Monitoring</h5>
+                <p class="text-muted">
+                    Enhanced monitoring after 10 PM. Security
+                    dashboard highlights active students.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="bg-light rounded-3 p-5 mb-5">
+    <h2 class="text-center fw-bold mb-5">How It Works</h2>
+    <div class="row g-4">
+        <div class="col-md-3 text-center">
+            <div class="step-number bg-danger text-white rounded-circle mx-auto mb-3">1</div>
+            <h6 class="fw-bold">Student Registers</h6>
+            <p class="text-muted small">Student signs up with roll number and links to parent account</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="step-number bg-danger text-white rounded-circle mx-auto mb-3">2</div>
+            <h6 class="fw-bold">Shares Location</h6>
+            <p class="text-muted small">App tracks GPS and checks if student is inside campus boundary</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="step-number bg-danger text-white rounded-circle mx-auto mb-3">3</div>
+            <h6 class="fw-bold">Parents Get Alerts</h6>
+            <p class="text-muted small">Automatic email sent when child enters or exits campus</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="step-number bg-danger text-white rounded-circle mx-auto mb-3">4</div>
+            <h6 class="fw-bold">Stay Connected</h6>
+            <p class="text-muted small">Parents see live map, location history and check-ins anytime</p>
+        </div>
+    </div>
+</div>
+
+<!-- STATS SECTION -->
+<div class="row g-4 text-center mb-5">
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-3">
+            <h2 class="fw-bold text-danger">24/7</h2>
+            <p class="text-muted mb-0">Real-time Monitoring</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-3">
+            <h2 class="fw-bold text-danger">
+                < 1 min</h2>
+                    <p class="text-muted mb-0">Alert Response Time</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-3">
+            <h2 class="fw-bold text-danger">100%</h2>
+            <p class="text-muted mb-0">Campus Coverage</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

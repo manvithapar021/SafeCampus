@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="fas fa-home text-danger"></i> Parent Dashboard
+        </h2>
+        <p class="text-muted mb-0">Welcome, {{ current_user.name }}</p>
+    </div>
+</div>
+
+{% for child in children %}
+<!-- Emergency Contacts -->
+<div class="mt-3">
+    <h6 class="fw-bold text-danger">
+        <i class="fas fa-phone-alt"></i> Emergency Contacts
+    </h6>
+    {% set contacts = child.emergency_contacts %}
+    {% if contacts %}
+    <div class="row g-2">
+        {% for contact in contacts %}
+        <div class="col-md-6">
+            <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="fw-bold mb-0">{{ contact.name }}</p>
+                    <p class="text-muted small mb-0">
+                        {{ contact.relationship }}
+                    </p>
+                    <p class="text-muted small mb-0">
+                        {{ contact.phone }}
+                    </p>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <a href="tel:{{ contact.phone }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-phone"></i> Call
+                    </a>
+                    {% if contact.email %}
+                    <a href="mailto:{{ contact.email }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted small">
+        No emergency contacts added yet.
+    </p>
+    {% endif %}
+</div>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">
+                <i class="fas fa-user-graduate text-danger"></i>
+                {{ child.user.name }}
+                <small class="text-muted fw-normal">{{ child.roll_number }}</small>
+            </h5>
+            {% if child.is_on_campus %}
+            <span class="badge bg-success">✅ On Campus</span>
+            {% else %}
+            <span class="badge bg-secondary">📍 Off Campus</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-4">
+
+            <!-- Info -->
+            <div class="col-md-4">
+                <p class="mb-2">
+                    <i class="fas fa-university text-muted"></i>
+                    <strong>Department:</strong> {{ child.department or 'N/A' }}
+                </p>
+                <p class="mb-2">
+                    <i class="fas fa-calendar text-muted"></i>
+                    <strong>Year:</strong> {{ child.year or 'N/A' }}
+                </p>
+                <p class="mb-2">
+                    <i class="fas fa-clock text-muted"></i>
+                    <strong>Last Seen:</strong>
+                    {{ child.last_seen.strftime('%d %b, %I:%M %p') if child.last_seen else 'Never' }}
+                </p>
+                <p class="mb-0">
+                    <i class="fas fa-map-marker-alt text-muted"></i>
+                    <strong>Status:</strong>
+                    {% if child.is_on_campus %}
+                    <span class="text-success fw-bold">On Campus</span>
+                    {% else %}
+                    <span class="text-secondary">Off Campus</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Map -->
+            <div class="col-md-8">
+                <div id="map-{{ child.id }}" style="height: 300px; border-radius: 12px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No children linked to your account yet.</h5>
+    <p class="text-muted">Ask your child to register with their roll number so you can link accounts.</p>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    {% for child in children %}
+    var map{{ child.id }} = L.map('map-{{ child.id }}').setView(
+        [{{ child.current_latitude or 12.8231 }},
+        {{ child.current_longitude or 80.0444 }}], 16
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map{{ child.id }});
+
+    {% if child.current_latitude and child.current_longitude %}
+    L.marker([{{ child.current_latitude }}, {{ child.current_longitude }}])
+        .addTo(map{{ child.id }})
+        .bindPopup('<b>{{ child.user.name }}</b><br>Last seen: {{ child.last_seen.strftime("%I:%M %p") if child.last_seen else "Unknown" }}')
+        .openPopup();
+    {% endif %}
+
+    // Draw campus boundary circle
+    L.circle([12.8231, 80.0444], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.1,
+        radius: 500
+    }).addTo(map{{ child.id }});
+
+    {% endfor %}
+
+    // Auto refresh every 30 seconds
+    setTimeout(function () { location.reload(); }, 30000);
+</script>
+{% endblock %}

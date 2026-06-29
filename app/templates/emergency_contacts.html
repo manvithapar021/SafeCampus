@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Emergency Contacts{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-phone-alt text-danger"></i> Emergency Contacts
+    </h2>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i>
+    Add up to <strong>2 trusted friends on campus</strong>.
+    When you press SOS, they get alerted along with your parents.
+</div>
+
+<!-- Existing contacts -->
+{% if contacts %}
+<div class="row g-3 mb-4">
+    {% for contact in contacts %}
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-1">
+                            <i class="fas fa-user-friends text-danger"></i>
+                            {{ contact.name }}
+                        </h5>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-phone"></i> {{ contact.phone }}
+                        </p>
+                        {% if contact.email %}
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-envelope"></i> {{ contact.email }}
+                        </p>
+                        {% endif %}
+                        <span class="badge bg-secondary">{{ contact.relationship }}</span>
+                    </div>
+                    <div class="d-flex gap-2 align-self-start">
+                        <a href="{{ url_for('main.edit_contact', contact_id=contact.id) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+
+                        <a href="{{ url_for('main.delete_contact', contact_id=contact.id) }}"
+                            class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this contact?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Add new contact -->
+{% if contacts|length < 2 %} <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">
+            <i class="fas fa-plus-circle text-success"></i> Add Emergency Contact
+        </h5>
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Full Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Contact's name" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="Mobile number" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Email (for alerts)</label>
+                    <input type="email" name="email" class="form-control" placeholder="Their email address">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Relationship</label>
+                    <select name="relationship" class="form-select">
+                        <option value="Friend">Friend</option>
+                        <option value="Roommate">Roommate</option>
+                        <option value="Classmate">Classmate</option>
+                        <option value="Senior">Senior</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-plus"></i> Add Contact
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        Maximum 2 emergency contacts reached.
+    </div>
+    {% endif %}
+
+    {% endblock %}

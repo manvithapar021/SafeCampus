@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+        <i class="fas fa-shield-alt text-danger"></i> Security Admin Dashboard
+    </h2>
+    <span class="badge bg-danger fs-6">
+        <i class="fas fa-circle fa-beat"></i> Live
+    </span>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h2 class="fw-bold text-primary">{{ all_students|length }}</h2>
+            <p class="text-muted mb-0">Total Students</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h2 class="fw-bold text-success">{{ on_campus|length }}</h2>
+            <p class="text-muted mb-0">On Campus Now</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h2 class="fw-bold text-secondary">{{ all_students|length - on_campus|length }}</h2>
+            <p class="text-muted mb-0">Off Campus</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <h2 class="fw-bold text-danger">{{ sos_alerts|length }}</h2>
+            <p class="text-muted mb-0">Active SOS Alerts</p>
+        </div>
+    </div>
+</div>
+
+<!-- SOS Alerts -->
+{% if sos_alerts %}
+<div class="alert alert-danger border-danger mb-4">
+    <h5 class="fw-bold"><i class="fas fa-exclamation-circle fa-beat"></i> Active SOS Alerts!</h5>
+    {% for sos in sos_alerts %}
+    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <div>
+            <strong>{{ sos.student.user.name }}</strong> —
+            {{ sos.timestamp.strftime('%d %b, %I:%M %p') }}
+            <a href="https://www.google.com/maps?q={{ sos.latitude }},{{ sos.longitude }}" target="_blank"
+                class="btn btn-sm btn-outline-danger ms-2">
+                <i class="fas fa-map-marker-alt"></i> View Location
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Live Map -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">
+            <i class="fas fa-map text-primary"></i> Live Campus Map
+        </h5>
+        <div id="adminMap" style="height: 450px; border-radius: 12px;"></div>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">
+            <i class="fas fa-users text-info"></i> All Students
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll Number</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in all_students %}
+                    <tr>
+                        <td class="fw-semibold">{{ student.user.name }}</td>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.department or '—' }}</td>
+                        <td>
+                            {% if student.is_on_campus %}
+                            <span class="badge bg-success">On Campus</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Off Campus</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">
+                            {{ student.last_seen.strftime('%d %b, %I:%M %p') if student.last_seen else 'Never' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    var adminMap = L.map('adminMap').setView([12.8231, 80.0444], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(adminMap);
+
+    // Campus boundary
+    L.circle([12.8231, 80.0444], {
+        color: 'red', fillColor: '#f03',
+        fillOpacity: 0.1, radius: 500
+    }).addTo(adminMap);
+
+    // Load student locations
+    function loadStudentMarkers() {
+        fetch('/api/students_locations')
+            .then(r => r.json())
+            .then(students => {
+                students.forEach(function (s) {
+                    var color = s.on_campus ? 'green' : 'gray';
+                    var marker = L.circleMarker([s.lat, s.lon], {
+                        radius: 10, fillColor: color,
+                        color: '#fff', weight: 2,
+                        fillOpacity: 0.9
+                    }).addTo(adminMap);
+                    marker.bindPopup(
+                        `<b>${s.name}</b><br>${s.roll}<br>
+                Status: ${s.on_campus ? '✅ On Campus' : '📍 Off Campus'}<br>
+                Last seen: ${s.last_seen}`
+                    );
+                });
+            });
+    }
+
+    loadStudentMarkers();
+    setInterval(loadStudentMarkers, 30000);
+</script>
+{% endblock %}

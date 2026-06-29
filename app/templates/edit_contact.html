@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Edit Contact{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-4">
+                    <i class="fas fa-edit text-danger"></i> Edit Emergency Contact
+                </h4>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ contact.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" value="{{ contact.phone }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ contact.email or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Relationship</label>
+                        <select name="relationship" class="form-select">
+                            <option value="Friend" {% if contact.relationship=='Friend' %}selected{% endif %}>Friend
+                            </option>
+                            <option value="Roommate" {% if contact.relationship=='Roommate' %}selected{% endif %}>
+                                Roommate</option>
+                            <option value="Classmate" {% if contact.relationship=='Classmate' %}selected{% endif %}>
+                                Classmate</option>
+                            <option value="Senior" {% if contact.relationship=='Senior' %}selected{% endif %}>Senior
+                            </option>
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="{{ url_for('main.emergency_contacts') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

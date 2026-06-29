@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus text-danger fa-3x"></i>
+                    <h3 class="fw-bold mt-2">Create Account</h3>
+                    <p class="text-muted">Join SafeCampus today</p>
+                </div>
+                <form method="POST" id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="Enter your phone number">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="Create a password"
+                            required id="passwordInput" minlength="8">
+                        <div id="passwordStrength" class="mt-2"></div>
+                        <div class="form-text">
+                            Must be 8+ characters with uppercase, lowercase, and a number.
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">I am registering as</label>
+                        <select name="role" class="form-select" id="roleSelect" required>
+                            <option value="">-- Select Role --</option>
+                            <option value="student">Student</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+
+                    <!-- Student fields -->
+                    <div id="studentFields" class="d-none">
+                        <hr>
+                        <p class="fw-semibold text-danger">Student Details</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Roll Number</label>
+                            <input type="text" name="roll_number" class="form-control"
+                                placeholder="e.g. RA2111003010001">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Department</label>
+                            <input type="text" name="department" class="form-control"
+                                placeholder="e.g. Computer Science">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Year</label>
+                            <select name="year" class="form-select">
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Parent fields -->
+                    <div id="parentFields" class="d-none">
+                        <hr>
+                        <p class="fw-semibold text-danger">Parent Details</p>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Your Child's Roll Number
+                            </label>
+                            <input type="text" name="student_roll" class="form-control"
+                                placeholder="Enter your child's roll number">
+                            <div class="form-text">
+                                Ask your child for their roll number to link accounts.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 py-2 fw-semibold mt-2">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+                <hr class="my-4">
+                <p class="text-center text-muted mb-0">
+                    Already have an account?
+                    <a href="{{ url_for('main.login') }}" class="text-danger fw-semibold">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Show/hide fields based on role selected
+    document.getElementById('roleSelect').addEventListener('change', function () {
+        const studentFields = document.getElementById('studentFields');
+        const parentFields = document.getElementById('parentFields');
+
+        // Hide both first
+        studentFields.classList.add('d-none');
+        parentFields.classList.add('d-none');
+
+        // Show the right one
+        if (this.value === 'student') {
+            studentFields.classList.remove('d-none');
+        } else if (this.value === 'parent') {
+            parentFields.classList.remove('d-none');
+        }
+    });
+    // Password strength checker
+    document.getElementById('passwordInput').addEventListener('input', function () {
+        const val = this.value;
+        const strengthDiv = document.getElementById('passwordStrength');
+
+        const hasLength = val.length >= 8;
+        const hasUpper = /[A-Z]/.test(val);
+        const hasLower = /[a-z]/.test(val);
+        const hasNumber = /[0-9]/.test(val);
+
+        const score = [hasLength, hasUpper, hasLower, hasNumber]
+            .filter(Boolean).length;
+
+        const levels = ['', 'danger', 'warning', 'info', 'success'];
+        const labels = ['', 'Too weak', 'Weak', 'Good', 'Strong ✅'];
+
+        if (val.length === 0) {
+            strengthDiv.innerHTML = '';
+            return;
+        }
+
+        strengthDiv.innerHTML = `
+        <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-${levels[score]}" 
+                 style="width: ${score * 25}%"></div>
+        </div>
+        <small class="text-${levels[score]}">${labels[score]}</small>
+        <small class="ms-2 text-muted">
+            ${!hasLength ? '❌ 8+ chars ' : '✅ '}
+            ${!hasUpper ? '❌ Uppercase ' : '✅ '}
+            ${!hasNumber ? '❌ Number' : '✅ '}
+        </small>
+    `;
+    });
+</script>
+{% endblock %}
+{% endblock %}

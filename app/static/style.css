@@ -1,0 +1,301 @@
+/* ===== GLOBAL ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: 20px;
+    padding: 80px 40px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(220, 53, 69, 0.1) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.hero-icon i {
+    font-size: 5rem;
+    color: #dc3545;
+    filter: drop-shadow(0 0 20px rgba(220, 53, 69, 0.5));
+}
+
+/* ===== FEATURE CARDS ===== */
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px !important;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== STEP NUMBERS ===== */
+.step-number {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+/* ===== STAT CARDS ===== */
+.stat-card {
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ===== SOS BUTTON ===== */
+.sos-button {
+    border-radius: 50px;
+    font-size: 1.1rem;
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    animation: sos-pulse 2s infinite;
+    transition: all 0.3s ease;
+}
+
+.sos-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+}
+
+@keyframes sos-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== CARDS ===== */
+.card {
+    border-radius: 15px !important;
+    transition: box-shadow 0.3s ease;
+}
+
+/* ===== FORMS ===== */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    border: 1.5px solid #dee2e6;
+    padding: 10px 15px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c82333, #a71d2a);
+    transform: translateY(-1px);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    margin-top: auto;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 40px 20px !important;
+    }
+
+    .hero-icon i {
+        font-size: 3rem;
+    }
+
+    .display-4 {
+        font-size: 1.8rem;
+    }
+}
+
+/* ===== IMPROVED HOME PAGE BUTTONS ===== */
+.hero-section .btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border: none;
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+}
+
+.hero-section .btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.hero-section .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* ===== BETTER NAVBAR ===== */
+.navbar {
+    background: linear-gradient(135deg, #0d1117, #161b22) !important;
+    padding: 12px 0;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+
+/* ===== BETTER CARDS ===== */
+.card {
+    border-radius: 16px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ===== BETTER DASHBOARD HEADER ===== */
+.dashboard-header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 24px;
+}
+
+/* ===== BETTER TABLES ===== */
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    border: none;
+    padding: 14px 16px;
+}
+
+.table tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-color: #f0f0f0;
+}
+
+/* ===== BETTER BADGES ===== */
+.badge {
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 500;
+}
+
+/* ===== BETTER FORMS ===== */
+.form-control,
+.form-select {
+    border-radius: 12px !important;
+    border: 1.5px solid #e9ecef !important;
+    padding: 12px 16px !important;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+}
+
+/* ===== BETTER ALERTS ===== */
+.alert {
+    border-radius: 12px;
+    border: none;
+    padding: 14px 18px;
+}
+
+/* ===== BETTER FOOTER ===== */
+footer {
+    background: linear-gradient(135deg, #0d1117, #161b22) !important;
+    padding: 20px 0 !important;
+}
+
+/* ===== INPUT GROUP ===== */
+.input-group-text {
+    border-radius: 12px 0 0 12px !important;
+    border: 1.5px solid #e9ecef !important;
+    background: #f8f9fa;
+}
+
+.input-group .form-control {
+    border-radius: 0 12px 12px 0 !important;
+}

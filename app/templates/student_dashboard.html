@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="fas fa-user-graduate text-danger"></i>
+            Hello, {{ current_user.name }}!
+        </h2>
+        <p class="text-muted mb-0">{{ student.department }} | Year {{ student.year }} | {{ student.roll_number }}</p>
+    </div>
+    <div>
+        {% if student.is_on_campus %}
+        <span class="badge bg-success fs-6 p-2">
+            <i class="fas fa-map-marker-alt"></i> On Campus
+        </span>
+        {% else %}
+        <span class="badge bg-secondary fs-6 p-2">
+            <i class="fas fa-map-marker-alt"></i> Off Campus
+        </span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- SOS BUTTON — most important feature -->
+<div class="sos-section text-center p-4 mb-4 rounded-3 bg-danger bg-opacity-10 border border-danger">
+    <p class="text-danger fw-semibold mb-2">
+        <i class="fas fa-exclamation-triangle"></i> Emergency? Press SOS immediately
+    </p>
+    <button id="sosBtn" class="btn btn-danger btn-lg px-5 py-3 fw-bold sos-button">
+        <i class="fas fa-exclamation-circle fa-2x"></i><br>
+        SOS — SEND HELP
+    </button>
+    <p class="text-muted small mt-2 mb-0">
+        Instantly alerts your parents and campus security with your exact location
+    </p>
+</div>
+
+<!-- Location Sharing -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-satellite-dish text-primary"></i> Location Sharing
+                </h5>
+                <p class="text-muted small">Share your live location so parents can see you on the map.</p>
+                <div id="locationStatus" class="alert alert-secondary py-2 small">
+                    <i class="fas fa-circle-notch fa-spin"></i> Getting your location...
+                </div>
+                <button id="shareLocationBtn" class="btn btn-primary w-100">
+                    <i class="fas fa-map-marker-alt"></i> Start Sharing Location
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Check In -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-check-circle text-success"></i> Check In
+                </h5>
+                <p class="text-muted small">Let your parents know where you are right now.</p>
+                <select id="checkinLocation" class="form-select mb-2">
+                    <option value="">Select location...</option>
+                    <optgroup label="🏛️ Gates & Landmarks">
+                        <option value="Arch Gate (Main Entrance)">Arch Gate (Main Entrance)</option>
+                        <option value="Clock Tower">Clock Tower</option>
+                    </optgroup>
+                    <optgroup label="🏫 Academic Blocks">
+                        <option value="Tech Park (TP-1)">Tech Park (TP-1)</option>
+                        <option value="Architecture / MBA Block">Architecture / MBA Block</option>
+                        <option value="SRM Law Building">SRM Law Building</option>
+                        <option value="SRM Global Hospital">SRM Global Hospital</option>
+                    </optgroup>
+                    <optgroup label="🍽️ Food & Common Areas">
+                        <option value="Java Food Court">Java Food Court</option>
+                        <option value="Vendhar Square">Vendhar Square</option>
+                        <option value="TPG Auditorium">TPG Auditorium</option>
+                    </optgroup>
+                    <optgroup label="🏠 Girls Hostels">
+                        <option value="Kopperundevi Hostel (M Block)">Kopperundevi (M Block)</option>
+                        <option value="Meenakshi Hostel">Meenakshi Hostel</option>
+                        <option value="ESQ Hostel (A & B)">ESQ Hostel (A & B)</option>
+                        <option value="Shenbagam Hostel">Shenbagam Hostel</option>
+                        <option value="Kalpana Chawla Hostel">Kalpana Chawla Hostel</option>
+                        <option value="Malligai Hostel">Malligai Hostel</option>
+                        <option value="Thamarai Hostel">Thamarai Hostel</option>
+                        <option value="Mullai Hostel">Mullai Hostel</option>
+                        <option value="Sannasi C Hostel">Sannasi C Hostel</option>
+                        <option value="Begam Hostel">Begam Hostel</option>
+                        <option value="N Block Hostel">N Block Hostel</option>
+                    </optgroup>
+                    <optgroup label="🏠 Boys Hostels">
+                        <option value="Paari Hostel">Paari Hostel</option>
+                        <option value="Kaari Hostel">Kaari Hostel</option>
+                        <option value="Oori Hostel">Oori Hostel</option>
+                        <option value="Adhiyaman Hostel">Adhiyaman Hostel</option>
+                        <option value="Agasthiyar Hostel">Agasthiyar Hostel</option>
+                        <option value="Nelson Mandela Hostel">Nelson Mandela Hostel</option>
+                        <option value="Sannasi A Hostel">Sannasi A Hostel</option>
+                        <option value="Manoranjitham Hostel">Manoranjitham Hostel</option>
+                    </optgroup>
+                </select>
+                <input type="text" id="checkinMessage" class="form-control mb-2"
+                    placeholder="Optional message to parents...">
+                <button id="checkinBtn" class="btn btn-success w-100">
+                    <i class="fas fa-check"></i> Check In
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-2">
+    <a href="{{ url_for('main.emergency_contacts') }}" class="btn btn-outline-danger">
+        <i class="fas fa-phone-alt"></i> Manage Emergency Contacts
+    </a>
+</div>
+
+<!-- Recent Check-ins -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3">
+            <i class="fas fa-history text-info"></i> Recent Check-ins
+        </h5>
+        {% if checkins %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Location</th>
+                        <th>Message</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for checkin in checkins %}
+                    <tr>
+                        <td><i class="fas fa-map-pin text-danger"></i> {{ checkin.location_name }}</td>
+                        <td class="text-muted">{{ checkin.message or '—' }}</td>
+                        <td class="text-muted small">{{ checkin.timestamp.strftime('%d %b, %I:%M %p') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No check-ins yet. Use the Check In button above!</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let watchId = null;
+
+    // SOS Button
+    document.getElementById('sosBtn').addEventListener('click', function () {
+        if (!confirm('Are you sure you want to send an SOS alert? This will immediately notify your parents and security.')) return;
+
+        navigator.geolocation.getCurrentPosition(function (pos) {
+            fetch('/sos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude
+                })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    alert('🚨 SOS SENT! Help is on the way. Stay where you are.');
+                    document.getElementById('sosBtn').classList.add('btn-secondary');
+                    document.getElementById('sosBtn').disabled = true;
+                });
+        }, function () {
+            alert('Could not get your location. Please enable GPS and try again.');
+        });
+    });
+
+    // Location Sharing
+    document.getElementById('shareLocationBtn').addEventListener('click', function () {
+        if (watchId) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+            this.textContent = 'Start Sharing Location';
+            this.classList.replace('btn-danger', 'btn-primary');
+            document.getElementById('locationStatus').innerHTML =
+                '<i class="fas fa-stop-circle text-danger"></i> Location sharing stopped';
+            return;
+        }
+
+        this.innerHTML = '<i class="fas fa-stop-circle"></i> Stop Sharing';
+        this.classList.replace('btn-primary', 'btn-danger');
+
+        watchId = navigator.geolocation.watchPosition(function (pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+
+            fetch('/update_location', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude: lat, longitude: lon })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    const status = data.on_campus ?
+                        '✅ You are ON campus' :
+                        '📍 You are OFF campus';
+                    document.getElementById('locationStatus').innerHTML =
+                        `<i class="fas fa-satellite-dish text-success"></i> ${status} | Updated just now`;
+                });
+        }, function () {
+            document.getElementById('locationStatus').innerHTML =
+                '<i class="fas fa-exclamation-triangle text-danger"></i> Location access denied. Please enable GPS.';
+        }, { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 });
+    });
+
+    // Check In
+    document.getElementById('checkinBtn').addEventListener('click', function () {
+        const location = document.getElementById('checkinLocation').value;
+        const message = document.getElementById('checkinMessage').value;
+
+        if (!location) {
+            alert('Please select a location first!');
+            return;
+        }
+
+        fetch('/checkin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ location_name: location, message: message })
+        })
+            .then(r => r.json())
+            .then(data => {
+                alert(`✅ Checked in at ${data.location}! Your parents have been notified.`);
+                location.reload();
+            });
+    });
+</script>
+{% endblock %}
